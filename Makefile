@@ -1,8 +1,28 @@
-# two command one for run the main.go and one for build and put in the bin folder with the version
- build:
-	go build -o ./bin/dotsync -ldflags "-X main.version=`git describe --tags --always`" ./cmd/dotsync/main.go
+# Get the current version from git tag or commit hash
+VERSION := $(shell git describe --tags --always --abbrev=0)
 
- run:
-	go run ./cmd/dotsync/main.go
+# Binary names
+BINARY := ./bin/dotsync
+BINARY_VERSIONED := ./bin/dotsync-$(VERSION)
 
-.PHONY: build run
+# Build binary with version embedded
+build:
+	@echo "Building $(BINARY_VERSIONED)..."
+	go build -o $(BINARY_VERSIONED) -ldflags "-X main.version=$(VERSION)" ./cmd/dotsync/main.go
+	@echo "Built $(BINARY_VERSIONED)"
+
+# Build default binary without version suffix
+build-default:
+	@echo "Building $(BINARY)..."
+	go build -o $(BINARY) -ldflags "-X main.version=$(VERSION)" ./cmd/dotsync/main.go
+	@echo "Built $(BINARY)"
+
+# Run CLI with arguments
+run:
+	go run ./cmd/dotsync/main.go $(ARGS)
+
+# Clean binaries
+clean:
+	rm -f ./bin/dotsync ./bin/dotsync-*
+
+.PHONY: build build-default run clean
