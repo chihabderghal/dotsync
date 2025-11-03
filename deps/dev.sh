@@ -10,6 +10,7 @@ fi
 # Install basic utility packages
 sudo pacman -S --needed --noconfirm \
     base-devel \
+    tree \
     htop \
     wget \
     curl \
