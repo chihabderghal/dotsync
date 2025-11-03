@@ -58,12 +58,19 @@ func main() {
 			"./deps/fonts.sh", 
 			"./deps/dev.sh", 
 			"./deps/aur.sh",
+			"./deps/env.sh",
 		}
 		for _, scriptPath := range scriptPaths {
 			if err := runScript(scriptPath); err != nil {
 				fmt.Printf("[!] Error executing script %s: %v\n", scriptPath, err)
 				os.Exit(1)
 			}
+		}
+	case "env":
+		scriptPath := "./deps/env.sh"
+		if err := runScript(scriptPath); err != nil {
+			fmt.Printf("[!] Error executing script: %v\n", err)
+			os.Exit(1)
 		}
 	case "fonts":
 		scriptPath := "./deps/fonts.sh" 

@@ -36,7 +36,8 @@ sudo pacman -S --needed --noconfirm \
     firefox \
     github-cli \
     telegram-desktop \
-    vlc
+    vlc \
+    copyq
 
 echo "[ok] Development packages installed"
 
