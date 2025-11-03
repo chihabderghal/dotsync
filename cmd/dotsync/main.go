@@ -2,31 +2,13 @@ package main
 
 import (
 	"fmt"
+	utils "github.com/chihabderghal/internal/utils"
 	"os"
 	"os/exec"
 	"path/filepath"
 )
 
-const version = "undefined"
-
-func printHelp() {
-	fmt.Println(`dotsync - A simple tool to sync your dotfiles and system configs
-
-Usage:
-  dotsync [command] [flags]
-
-Commands:
-  all 	      Set up the entire system (development environment, fonts, AUR packages)
-  dev      	  Set up development environment using the provided Bash script
-  fonts       Install common fonts using the provided Bash script
-  aur         Install AUR packages using the provided Bash script
-  help        Show this help message
-  version     Show version information
-
-Examples:
-  dotsync fonts
-  dotsync --help`)
-}
+const version = "1.0.0"
 
 func runScript(scriptPath string) error {
 	absPath, err := filepath.Abs(scriptPath)
@@ -44,21 +26,22 @@ func runScript(scriptPath string) error {
 
 func main() {
 	if len(os.Args) < 2 {
-		printHelp()
+		utils.PrintHelp()
 		return
 	}
 
 	switch os.Args[1] {
 	case "-h", "--help", "help":
-		printHelp()
+		utils.PrintHelp()
 	case "-v", "--version", "version":
 		fmt.Println("dotsync version", version)
 	case "all":
 		scriptPaths := []string{
-			"./deps/fonts.sh", 
-			"./deps/dev.sh", 
+			"./deps/fonts.sh",
+			"./deps/dev.sh",
 			"./deps/aur.sh",
 			"./deps/env.sh",
+			"./deps/dot-setup.sh",
 		}
 		for _, scriptPath := range scriptPaths {
 			if err := runScript(scriptPath); err != nil {
@@ -73,13 +56,13 @@ func main() {
 			os.Exit(1)
 		}
 	case "fonts":
-		scriptPath := "./deps/fonts.sh" 
+		scriptPath := "./deps/fonts.sh"
 		if err := runScript(scriptPath); err != nil {
 			fmt.Printf("[!] Error executing script: %v\n", err)
 			os.Exit(1)
 		}
 	case "dev":
-		scriptPath := "./deps/dev.sh" 
+		scriptPath := "./deps/dev.sh"
 		if err := runScript(scriptPath); err != nil {
 			fmt.Printf("[!] Error executing script: %v\n", err)
 			os.Exit(1)
@@ -90,8 +73,14 @@ func main() {
 			fmt.Printf("[!] Error executing script: %v\n", err)
 			os.Exit(1)
 		}
+	case "dot-setup":
+		scriptPath := "./deps/dot-setup.sh"
+		if err := runScript(scriptPath); err != nil {
+			fmt.Printf("[!] Error executing script: %v\n", err)
+			os.Exit(1)
+		}
 	default:
 		fmt.Printf("Unknown command: %s\n\n", os.Args[1])
-		printHelp()
+		utils.PrintHelp()
 	}
 }
